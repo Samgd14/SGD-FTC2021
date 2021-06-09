@@ -27,8 +27,8 @@ public class Intake {
         mStars.setPower(0);
     }
 
-    public void precharge(){
-        mRoller.setPower(-0.5);
+    public void shoot(){
+        mRoller.setPower(1);
         mStars.setPower(0);
     }
 

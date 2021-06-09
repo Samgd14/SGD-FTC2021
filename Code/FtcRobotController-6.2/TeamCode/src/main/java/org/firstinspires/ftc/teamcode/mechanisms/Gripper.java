@@ -40,7 +40,7 @@ public class Gripper {
     }
 
     public void update(){
-        pid.getOutput(m3.getCurrentPosition(), angle);
+        m3.setPower(pid.getOutput(m3.getCurrentPosition(), angle));
     }
 
 }

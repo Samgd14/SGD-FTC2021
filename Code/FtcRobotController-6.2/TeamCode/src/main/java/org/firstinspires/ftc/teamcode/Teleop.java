@@ -37,7 +37,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain;
+import org.firstinspires.ftc.teamcode.mechanisms.DifferentialDrive;
+import org.firstinspires.ftc.teamcode.mechanisms.Gripper;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.Shooter;
 
@@ -47,10 +48,13 @@ public class Teleop extends OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
+    private TouchSensor s_gripper;
+
     //Declare mechanisms
-    private Drivetrain drivetrain;
+    private DifferentialDrive drivetrain;
     private Intake intake;
     private Shooter shooter;
+    private Gripper gripper;
 
     // Variables setup
     double speedMultiplier = 0.6 ;
@@ -74,8 +78,7 @@ public class Teleop extends OpMode
         CRServo m_gripper1 = hardwareMap.get(CRServo.class, "m_gripper1");
         CRServo m_gripper2 = hardwareMap.get(CRServo.class, "m_gripper2");
 
-        TouchSensor s_gripper = hardwareMap.get(TouchSensor.class, "s_gripper");
-
+        s_gripper = hardwareMap.get(TouchSensor.class, "s_gripper");
 
         // Set motor directions
         m_frontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -90,9 +93,10 @@ public class Teleop extends OpMode
         m_gripper2.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Initialize mechanisms
-        drivetrain = new Drivetrain(m_frontLeft, m_frontRight);
+        drivetrain = new DifferentialDrive(m_frontLeft, m_frontRight);
         intake = new Intake(m_intakeFloorRoller, m_intakeStars);
         shooter = new Shooter(m_shootLeft, m_shootRight);
+        gripper = new Gripper(m_gripper1, m_gripper2, m_gripperArm);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -129,14 +133,22 @@ public class Teleop extends OpMode
         drivetrain.drivePOV(ty, rx, speedMultiplier);
 
         // Update the intake
-        if(gamepad1.a){ intake.forward(); }
-        else if(gamepad1.b){ intake.stop(); }
-        else if(gamepad1.x){ intake.precharge(); }
-        else if(gamepad1.y){ intake.reverse(); }
+        if(gamepad2.a){ intake.forward(); }
+        else if(gamepad2.b){ intake.stop(); }
+        else if(gamepad2.x){ intake.shoot(); }
+        else if(gamepad2.y){ intake.reverse(); }
+
+        // Update the gripper
+        if(gamepad2.dpad_down){gripper.forward();}
+        else if(gamepad2.dpad_up){gripper.reverse();}
+        else if(gamepad2.dpad_right){gripper.goTo(90);}
+        else if(gamepad2.dpad_left){gripper.goTo(20);}
+
+        if(s_gripper.isPressed()){gripper.stop();}
 
         //Update the shooter
-        if(gamepad1.start){shooter.shoot();}
-        else if (gamepad1.back){shooter.stop();}
+        if(gamepad2.start){shooter.shoot();}
+        else if (gamepad2.back){shooter.stop();}
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
