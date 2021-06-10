@@ -42,7 +42,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Gripper;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.Shooter;
 
-@TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
+@TeleOp(name="Teleop", group="Iterative Opmode")
 public class Teleop extends OpMode
 {
     // Declare OpMode members.
@@ -85,12 +85,15 @@ public class Teleop extends OpMode
         m_frontRight.setDirection(DcMotor.Direction.REVERSE);
         m_shootLeft.setDirection(DcMotor.Direction.FORWARD);
         m_shootRight.setDirection(DcMotor.Direction.REVERSE);
-        m_intakeFloorRoller.setDirection(DcMotor.Direction.REVERSE);
-        m_intakeStars.setDirection(DcMotor.Direction.FORWARD);
+        m_intakeFloorRoller.setDirection(DcMotor.Direction.FORWARD);
+        m_intakeStars.setDirection(DcMotor.Direction.REVERSE);
         m_gripperArm.setDirection(DcMotor.Direction.FORWARD);
 
         m_gripper1.setDirection(DcMotorSimple.Direction.FORWARD);
         m_gripper2.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // Set motor modes
+        m_gripperArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         //Initialize mechanisms
         drivetrain = new DifferentialDrive(m_frontLeft, m_frontRight);
@@ -141,7 +144,7 @@ public class Teleop extends OpMode
         // Update the gripper
         if(gamepad2.dpad_down){gripper.forward();}
         else if(gamepad2.dpad_up){gripper.reverse();}
-        else if(gamepad2.dpad_right){gripper.goTo(90);}
+        else if(gamepad2.dpad_right){gripper.goTo(-20);}
         else if(gamepad2.dpad_left){gripper.goTo(20);}
 
         if(s_gripper.isPressed()){gripper.stop();}
