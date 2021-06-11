@@ -33,7 +33,7 @@ public class Gripper {
     }
 
     public void goTo(double angle){
-        m3.setTargetPosition( (int) Math.round(angle*3500));
+        //m3.setTargetPosition( (int) Math.round(angle*3500));
     }
 
 }

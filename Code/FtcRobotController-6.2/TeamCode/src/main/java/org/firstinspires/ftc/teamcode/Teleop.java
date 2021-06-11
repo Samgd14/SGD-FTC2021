@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -74,9 +75,12 @@ public class Teleop extends OpMode
         DcMotor m_intakeFloorRoller = hardwareMap.get(DcMotor.class, "m_intakeFloorRoller");
         DcMotor m_intakeStars = hardwareMap.get(DcMotor.class, "m_intakeStars");
         DcMotor m_gripperArm = hardwareMap.get(DcMotor.class, "m_gripperArm");
+        DcMotor m_topBelts = hardwareMap.get(DcMotor.class, "m_topBelts");
 
         CRServo m_gripper1 = hardwareMap.get(CRServo.class, "m_gripper1");
         CRServo m_gripper2 = hardwareMap.get(CRServo.class, "m_gripper2");
+
+        Servo m_gate = hardwareMap.get(Servo.class, "m_gate");
 
         s_gripper = hardwareMap.get(TouchSensor.class, "s_gripper");
 
@@ -88,16 +92,14 @@ public class Teleop extends OpMode
         m_intakeFloorRoller.setDirection(DcMotor.Direction.FORWARD);
         m_intakeStars.setDirection(DcMotor.Direction.REVERSE);
         m_gripperArm.setDirection(DcMotor.Direction.FORWARD);
+        m_topBelts.setDirection(DcMotor.Direction.REVERSE);
 
         m_gripper1.setDirection(DcMotorSimple.Direction.FORWARD);
         m_gripper2.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // Set motor modes
-        m_gripperArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         //Initialize mechanisms
         drivetrain = new DifferentialDrive(m_frontLeft, m_frontRight);
-        intake = new Intake(m_intakeFloorRoller, m_intakeStars);
+        intake = new Intake(m_intakeFloorRoller, m_intakeStars, m_topBelts, m_gate);
         shooter = new Shooter(m_shootLeft, m_shootRight);
         gripper = new Gripper(m_gripper1, m_gripper2, m_gripperArm);
 
@@ -140,6 +142,7 @@ public class Teleop extends OpMode
         else if(gamepad2.b){ intake.stop(); }
         else if(gamepad2.x){ intake.shoot(); }
         else if(gamepad2.y){ intake.reverse(); }
+        else if(gamepad2.right_bumper){ intake.preload(); }
 
         // Update the gripper
         if(gamepad2.dpad_down){gripper.forward();}
